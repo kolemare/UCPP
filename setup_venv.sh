@@ -47,6 +47,12 @@ pip install google-auth-oauthlib
 # Install google-auth-httplib2
 pip install google-auth-httplib2
 
+# Install matplotlib
+pip install matplotlib
+
+# Install scikit-learn
+pip install scikit-learn
+
 echo "Dependencies installed in virtual environment $VENV_NAME."
 
 # Deactivate the virtual environment
