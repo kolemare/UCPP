@@ -45,11 +45,10 @@ y_scaled = scaler_y.fit_transform(y.reshape(-1, 1)).flatten()
 # Split the dataset into the Training set and Test set
 X_train, X_test, y_train, y_test = train_test_split(X, y_scaled, test_size=0.2, random_state=0)
 
-print("----------------------------")
-print(X_train)
-print("shape 0 is " + str(X_train.shape[0]))
-print("shape 1 is " + str(X_train.shape[1]))
-print("----------------------------")
+print("------------------------------------------------------------")
+print("Rows: " + str(X_train.shape[0]))
+print("Columns: " + str(X_train.shape[1]))
+print("------------------------------------------------------------")
 
 # Convert the sparse matrices to dense arrays
 X_train_dense = X_train.toarray()
@@ -57,23 +56,27 @@ X_test_dense = X_test.toarray()
 
 # Part 2 - Building the ANN
 
+for feature in categorical_features:
+    unique_categories = df[feature].nunique()
+    print(f"{feature}: {unique_categories} unique categories")
+
 # Initializing the ANN
 ann = tf.keras.models.Sequential()
 
 # Adding the input layer and the first hidden layer
-ann.add(tf.keras.layers.Dense(units=6, activation='relu'))
+ann.add(tf.keras.layers.Dense(units=256, activation='relu'))
 #ann.add(tf.keras.layers.Dropout(0.2))  # Dropout layer with 20% dropout rate
 
 # Adding the second hidden layer
-ann.add(tf.keras.layers.Dense(units=6, activation='relu'))
+ann.add(tf.keras.layers.Dense(units=128, activation='relu'))
 #ann.add(tf.keras.layers.Dropout(0.2))  # Dropout layer with 20% dropout rate
 
 # Adding the third hidden layer
-#ann.add(tf.keras.layers.Dense(units=64, activation='relu'))
+ann.add(tf.keras.layers.Dense(units=64, activation='relu'))
 #ann.add(tf.keras.layers.Dropout(0.2))  # Dropout layer with 20% dropout rate
 
 # Adding the fourth hidden layer
-#ann.add(tf.keras.layers.Dense(units=32, activation='relu'))
+ann.add(tf.keras.layers.Dense(units=32, activation='relu'))
 #ann.add(tf.keras.layers.Dropout(0.2))  # Dropout layer with 20% dropout rate
 
 
@@ -83,10 +86,10 @@ ann.add(tf.keras.layers.Dense(units=1))  # No activation function for regression
 # Part 3 - Training the ANN
 
 # Compiling the ANN with a lower learning rate
-ann.compile(optimizer='adam', loss='mean_squared_error')
+ann.compile(optimizer=Adam(learning_rate=0.00001), loss='mean_squared_error')
 
 # Training the ANN on the Training set
-ann.fit(X_train_dense, y_train, batch_size=512, epochs=50, shuffle=True)
+ann.fit(X_train_dense, y_train, batch_size=32, epochs=50, shuffle=True)
 
 # Part 4 - Making predictions and evaluating the model
 
