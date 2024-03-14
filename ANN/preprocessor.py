@@ -79,15 +79,20 @@ class DataVisualizer:
 
     def load_and_describe_data(self):
         n_row, n_col = self.df.shape
-        print(f'There are {n_row} rows and {n_col} columns')
-        print(self.df.head(100))
+        print(f'There are {n_row} rows and {n_col} columns in raw dataset.')
         return self.df
 
 
 visualizer = DataVisualizer('../udataset/vehicles.csv')
 df1 = visualizer.load_and_describe_data()
+columns_to_remove = ['id', 'url', 'region_url', 'cylinders', 'title_status', 'VIN', 'size', 'paint_color', 'image_url', 'description', 'county']
+df1 = df1.drop(columns=columns_to_remove)
+df1 = df1.dropna()
+print(df1.head(100))
+print(f"Total number of rows in the DataFrame: {len(df1)}")
 visualizer.plot_per_column_distribution(10, 5)
 visualizer.plot_correlation_matrix(8)
 visualizer.plot_scatter_matrix(20, 10)
 visualizer.count_nan_values()
+
 
