@@ -11,8 +11,8 @@ from tensorflow.keras.callbacks import EarlyStopping
 
 # Load and preprocess the dataset
 visualizer = DataVisualizer('../udataset/vehicles.csv')
-df = visualizer.load_and_describe_data()
-columns_to_remove = ['id', 'url', 'region_url', 'cylinders', 'title_status', 'VIN', 'size', 'paint_color', 'image_url', 'description', 'county']
+df = visualizer.load_data()
+columns_to_remove = ['id', 'url', 'region_url', 'cylinders', 'title_status', 'VIN', 'size', 'paint_color', 'image_url', 'description', 'county', 'region']
 df.drop(columns=columns_to_remove, inplace=True)
 df.dropna(inplace=True)
 
@@ -21,7 +21,7 @@ df['posting_date'] = pd.to_datetime(df['posting_date'], utc=True)
 df['posting_date'] = (df['posting_date'] - pd.Timestamp('1970-01-01', tz='UTC')).dt.total_seconds().astype(float)
 
 # Identify categorical features
-categorical_features = ['region', 'model', 'condition', 'manufacturer', 'fuel', 'drive', 'type', 'state', 'transmission']
+categorical_features = ['model', 'condition', 'manufacturer', 'fuel', 'drive', 'type', 'state', 'transmission']
 
 # Identify numerical features
 numerical_features = ['year', 'odometer', 'lat', 'long', 'posting_date']
@@ -78,7 +78,6 @@ ann.add(tf.keras.layers.Dense(units=64, activation='relu'))
 # Adding the fourth hidden layer
 ann.add(tf.keras.layers.Dense(units=32, activation='relu'))
 #ann.add(tf.keras.layers.Dropout(0.2))  # Dropout layer with 20% dropout rate
-
 
 # Adding the output layer
 ann.add(tf.keras.layers.Dense(units=1))  # No activation function for regression

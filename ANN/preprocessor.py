@@ -77,12 +77,55 @@ class DataVisualizer:
         print(nan_counts)
         return nan_counts
 
-    def load_and_describe_data(self):
+    def load_data(self):
         n_row, n_col = self.df.shape
         print(f'There are {n_row} rows and {n_col} columns in raw dataset.')
+
+        # Get the 24 most popular manufacturers based on the number of listings
+        top_24_manufacturers = self.df['manufacturer'].value_counts().head(24).index.tolist()
+
+        # Filter the DataFrame to include only the top 24 manufacturers
+        self.df = self.df[self.df['manufacturer'].isin(top_24_manufacturers)]
+
+        # Get the top 10 models for each of the top 24 manufacturers
+        top_models = self.df.groupby('manufacturer')['model'].value_counts().groupby(level=0).head(10).reset_index(level=1, name='count')
+
+        # Filter the original DataFrame to keep only the selected top models
+        self.df = self.df.merge(top_models, on=['manufacturer', 'model'], how='inner')
+
         return self.df
 
-    def test_dataset(self):
+    def load_and_describe_data(data):
+        print("------------------------------------------------------------")
+        print("Top 10 models per manufacturer")
+        # Group the DataFrame by manufacturer and then get the top 10 models for each
+        top_models_per_manufacturer = df.groupby('manufacturer')['model'].value_counts().groupby(level=0).head(10)
+
+        # Print the top 10 models for each manufacturer along with their counts
+        print(top_models_per_manufacturer)
+        print("------------------------------------------------------------")
+        print("Sum of models")
+        # Sum the counts of the top 10 models for each manufacturer
+        sum_top_models_per_manufacturer = top_models_per_manufacturer.groupby(level=0).sum()
+
+        # Sort the sum of the top 10 models for each manufacturer in descending order
+        sorted_sum_top_models_per_manufacturer = sum_top_models_per_manufacturer.sort_values(ascending=False)
+
+
+        # Print the sum of the top 10 models for each manufacturer
+        print(sum_top_models_per_manufacturer)
+
+        print("------------------------------------------------------------")
+        # Print the sorted sum of the top 10 models for each manufacturer
+        print("Sorted sum of models (descending):")
+        print(sorted_sum_top_models_per_manufacturer)
+
+        total_sum_of_top_models = sum_top_models_per_manufacturer.sum()
+        print("Total sum of top models:", total_sum_of_top_models)
+
+        print("------------------------------------------------------------")
+
+    def test_method(self):
         visualizer = DataVisualizer('../udataset/vehicles.csv')
         df1 = visualizer.load_and_describe_data()
         columns_to_remove = ['id', 'url', 'region_url', 'cylinders', 'title_status', 'VIN', 'size', 'paint_color', 'image_url', 'description', 'county']
